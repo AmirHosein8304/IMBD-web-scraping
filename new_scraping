@@ -1,0 +1,26 @@
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer
+
+
+nltk.download('stopwords')
+nltk.download('punkt')
+stop_words = set(stopwords.words('english'))
+
+
+ps = PorterStemmer()
+
+
+def clean_text(text):
+    words = word_tokenize(text)
+    return [ps.stem(w)
+ for w in words if not w.lower() in stop_words]
+
+with open('input.txt', 'r') as file:
+    file_content = file.read()
+
+cleaned_text = clean_text(file_content)
+
+with open('cleaned_output.txt', 'w') as file:
+    file.write(' '.join(cleaned_text))
