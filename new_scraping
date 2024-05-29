@@ -20,3 +20,4 @@ with open('plot_summeries.txt', 'r') as file1:
             new_line = clean_text(line)
             file2.write(' '.join(new_line))
             file2.write('\n')
+            
