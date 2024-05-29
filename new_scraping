@@ -17,10 +17,13 @@ def clean_text(text):
     return [ps.stem(w)
  for w in words if not w.lower() in stop_words]
 
-with open('input.txt', 'r') as file:
-    file_content = file.read()
+with open('plot_summeries.txt', 'r') as file1:
+    with open('cleaned_file2.txt', 'w') as file2:
+        for line in file1.readlines():
+            new_line = clean_text(line)
+            file2.write(' '.join(new_line))
+            file2.write('\n')
 
-cleaned_text = clean_text(file_content)
 
-with open('cleaned_output.txt', 'w') as file:
-    file.write(' '.join(cleaned_text))
+
+
