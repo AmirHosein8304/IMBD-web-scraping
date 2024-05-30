@@ -79,7 +79,7 @@ with open("cleaned_file.txt","r") as f  :
         doc = doc.split()
         for word in doc:
             words.append(word)
-words = set(words)
+words = list(set(words))
 TF_values = []
 for doc in docs:
     dic = []
