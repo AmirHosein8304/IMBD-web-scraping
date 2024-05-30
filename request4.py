@@ -111,4 +111,6 @@ cosine_similarity = []
 for item in TF_values:
     wanted_vector = np.array(item)
     cosine_similarity.append(np.inner(wanted_vector, TF_query)/((np.inner(wanted_vector,wanted_vector)**0.5)*(np.inner(TF_query,TF_query)**0.5)))
-print(cosine_similarity.index(max(cosine_similarity)),'.',movies_name[cosine_similarity.index(max(cosine_similarity))])
+for i in range(5):
+    print(cosine_similarity.index(max(cosine_similarity)),'.',movies_name[cosine_similarity.index(max(cosine_similarity))])
+    cosine_similarity[cosine_similarity.index(max(cosine_similarity))] = 0
