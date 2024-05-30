@@ -52,14 +52,14 @@ for j in range(0,len(infos)-2,3):
     year = [movies_name[j//3],infos[j], infos[j+1], infos[j+2],final_links[j//3]]
     movies_year.append(year)
 movies_year = np.array(movies_year)
-for url in final_links:
+'''for url in final_links:
     get_plot(url)
 with open("plot_summeries.txt" , "w+") as f:
     for plot in plot_summeries:
         f.write(plot)
         f.write("\n")
         f.write("____________________________________________________")
-        f.write("\n")
+        f.write("\n")'''
 ###############################
 infile = "plot_summeries.txt"
 outfile = "cleaned_file.txt"
