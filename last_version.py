@@ -8,7 +8,7 @@ from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import KNeighborsClassifier
 import bs4
-from selenium import webdriver
+from selenium_1 import webdriver
 from selenium.webdriver.common.by import By
 driver = webdriver.Chrome()
 

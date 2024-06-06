@@ -1,6 +1,6 @@
 
-from selenium import webdriver
-import selenium
+from selenium_1 import webdriver
+import selenium_1
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 import json
