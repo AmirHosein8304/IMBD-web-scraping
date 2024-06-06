@@ -48,7 +48,7 @@ for i in names:
     name = i.text
     movies_name.append(name.split('. ')[1])
 
-vectorizer = TfidfVectorizer()
+vectorizer = TfidfVectorizer(ngram_range=(1,3))
 vectorizer.fit(words)
 tfidf_matrix = vectorizer.transform(words)
 
