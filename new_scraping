@@ -1,18 +1,27 @@
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-import requests
+#import requests
 import bs4
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.neighbors import KNeighborsClassifier
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+driver = webdriver.Chrome()
 
 
-headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 "}
-page = requests.get("https://www.imdb.com/chart/top/", headers=headers)
-soup = bs4.BeautifulSoup(page.text, "html.parser")
+#headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36 "}
+#page = requests.get("https://www.imdb.com/chart/top/", headers=headers)
+#soup = bs4.BeautifulSoup(page.text, "html.parser")
+driver.get("https://www.imdb.com/chart/top/")
+html_source = driver.page_source
+soup = bs4.BeautifulSoup(html_source,'html.parser')
 names = soup.find_all("div",{"class" : "ipc-title ipc-title--base ipc-title--title ipc-title-link-no-icon ipc-title--on-textPrimary sc-b189961a-9 iALATN cli-title"})
 nltk.download('stopwords')
 nltk.download('punkt')
 stop_words = set(stopwords.words('english'))
 
+driver.quit()
 
 
 def clean_text(text):
@@ -39,8 +48,6 @@ for i in names:
     name = i.text
     movies_name.append(name.split('. ')[1])
 
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.neighbors import KNeighborsClassifier
 vectorizer = TfidfVectorizer()
 vectorizer.fit(words)
 tfidf_matrix = vectorizer.transform(words)

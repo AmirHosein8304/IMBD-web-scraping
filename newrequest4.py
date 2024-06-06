@@ -1,5 +1,5 @@
 #import requests
-#import bs4
+import bs4
 import numpy as np
 import math
 from nltk.corpus import stopwords
@@ -14,41 +14,49 @@ driver = webdriver.Chrome()
 plot_summeries = []
 def get_plot(url):
     driver.get(url)
-    div_elements = driver.find_elements(By.CLASS_NAME,"ipc-html-content-inner-div")
-    #plot_soup = bs4.BeautifulSoup(plot.text,"html.parser")
-    #plots = plot_soup.find_all("div",{"class" : "ipc-html-content-inner-div"})
-    #plot = div_elements[0].text
-    plot_summeries.append(div_elements)
-    driver.quit()
+    html_source = driver.page_source
+    plot_soup = bs4.BeautifulSoup(html_source,'html.parser')
+    plots = plot_soup.find_all("div",{"class" : "ipc-html-content-inner-div"})
+    plot = plots[0].text
+    plot_summeries.append(plot)
+    
+
+#<a href="/title/tt0111161/?ref_=chttp_t_1" class="ipc-title-link-wrapper" tabindex="0"><h3 class="ipc-title__text">1. The Shawshank Redemption</h3></a>
 
 driver.get("https://www.imdb.com/chart/top/")
-links= str(driver.find_elements(By.CLASS_NAME,"ipc-title-link-wrapper")).split()
-infos = driver.find_elements(By.CLASS_NAME,"sc-b189961a-8 kLaxqf cli-title-metadata-item")
-names = driver.find_elements(By.CLASS_NAME,"ipc-title ipc-title--base ipc-title--title ipc-title-link-no-icon ipc-title--on-textPrimary sc-b189961a-9 iALATN cli-title")
-#soup = bs4.BeautifulSoup(page, "html.parser")
-#names = soup.find_all("div",{"class" : "ipc-title ipc-title--base ipc-title--title ipc-title-link-no-icon ipc-title--on-textPrimary sc-b189961a-9 iALATN cli-title"})
-#infos = soup.find_all("span" , {"class" : "sc-b189961a-8 kLaxqf cli-title-metadata-item"})
-#links = str(soup.find_all("a", {"class" : "ipc-title-link-wrapper"})).split()
-driver.quit()
+html_source = driver.page_source
+soup = bs4.BeautifulSoup(html_source,'html.parser')
+'''
+links= driver.find_elements(By.CSS_SELECTOR,"a.ipc-title-link-wrapper")
+infos = driver.find_elements(By.CSS_SELECTOR,"sc-b189961a-8 kLaxqf cli-title-metadata-item")
+names = driver.find_elements(By.CSS_SELECTOR,"h3.ipc-title__text")
+'''
+names = soup.find_all("div",{"class" : "ipc-title ipc-title--base ipc-title--title ipc-title-link-no-icon ipc-title--on-textPrimary sc-b189961a-9 iALATN cli-title"})
+infos = soup.find_all("span" , {"class" : "sc-b189961a-8 kLaxqf cli-title-metadata-item"})
+links = str(soup.find_all("a", {"class" : "ipc-title-link-wrapper"})).split("</a>, ")
+links = links[:250]
+
+
 for item in links:
     if 'href=' not in item:
         links.remove(item)
 final_links = []
 for item in links:
-    if 'href=' in item:
-        final_links.append((item.split('href="')[1]).split('?ref_=')[0])
-final_links = final_links[:-7]
+    final_links.append((item.split('href="')[1]).split('?ref_=')[0])
 for i in range(len(final_links)):
     junked = list(final_links[i])
     junked = ['https://www.imdb.com']+junked
     junked = junked + ['plotsummary/?ref_=tt_stry_pl']
     final_links[i]=''.join(junked)
 
+
+
 movies_name = []
 movies_year = []
 for i in names:
     name = i.text
     movies_name.append(name.split('. ')[1])
+    '''
 for i in range(len(infos)):
     infos[i]=infos[i].text
 for i in range(len(infos)):
@@ -59,21 +67,25 @@ for j in range(0,len(infos)-2,3):
     year = [movies_name[j//3],infos[j], infos[j+1], infos[j+2],final_links[j//3]]
     movies_year.append(year)
 movies_year = np.array(movies_year)
+'''
 
+'''
 t = 0 
 for url in final_links:
     get_plot(url)
     t = t+1
     print(t)
 
+'''
+driver.quit()
+'''
 with open("plot_summeries.txt" , "w+") as f:
     for plot in plot_summeries:
-        print(plot_summeries)
         f.write(plot)
         f.write("\n")
         f.write("____________________________________________________")
         f.write("\n")
-
+'''
 ###############################
 infile = "plot_summeries.txt"
 outfile = "cleaned_file.txt"
@@ -125,5 +137,7 @@ cosine_similarity = []
 for item in TF_values:
     wanted_vector = np.array(item)
     cosine_similarity.append(np.inner(wanted_vector, TF_query)/((np.inner(wanted_vector,wanted_vector)**0.5)*(np.inner(TF_query,TF_query)**0.5)))
-print(cosine_similarity.index(max(cosine_similarity)),'.',movies_name[cosine_similarity.index(max(cosine_similarity))])
-
+driver.quit()
+for i in range(5):
+    print(cosine_similarity.index(max(cosine_similarity)),'.',movies_name[cosine_similarity.index(max(cosine_similarity))])
+    cosine_similarity[cosine_similarity.index(max(cosine_similarity))] = 0
